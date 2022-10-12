@@ -31,7 +31,7 @@ class TryError(Exception):
 
 
 def try_packages(packages, virtualenv=None, python_version=None,
-                 shell=None, use_editor=False, keep=False, 
+                 shell=None, use_editor=False, keep=False,
                  tmpdir_base=None, index=None):
     """Try a python package with a specific python version.
 
@@ -59,11 +59,11 @@ def try_packages(packages, virtualenv=None, python_version=None,
             if not use_editor:
                 shell = shell if shell else "python"
                 with use_import(
-                    [p.import_name for p in packages]) as startup_script:
+                        [p.import_name for p in packages]) as startup_script:
                     run_shell(shell, startup_script)
             else:
                 with use_template(
-                    [p.import_name for p in packages]) as template:
+                        [p.import_name for p in packages]) as template:
                     run_editor(template)
         return tmpdir
 
