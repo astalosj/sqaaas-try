@@ -105,7 +105,7 @@ def use_virtualenv(virtualenv, python_version):
         else:
             proc = Popen("virtualenv env -p {0} >> {1}".format(
                 python_version, context.logfile),
-                         shell=True, cwd=context.tempdir_path)
+                         shell=False, cwd=context.tempdir_path)
             context.virtualenv_path = os.path.join(context.tempdir_path, "env")
             yield proc.wait() == 0
     finally:
@@ -176,13 +176,13 @@ def exec_in_virtualenv(command):
     if system() == "Windows":
         if command.startswith("PYTHONSTARTUP"):
             proc = Popen("{0}/Scripts/activate && set {1}".format(
-                context.virtualenv_path, command), shell=True)
+                context.virtualenv_path, command), shell=False)
         else:
             proc = Popen("{0}/Scripts/activate && {1}".format(
-                context.virtualenv_path, command), shell=True)
+                context.virtualenv_path, command), shell=False)
     else:
         proc = Popen(". {0}/bin/activate && {1}".format(
-            context.virtualenv_path, command), shell=True)
+            context.virtualenv_path, command), shell=False)
     if proc.wait() != 0:
         raise TryError(
             "Command '{0}' exited with error code: {1}. See {2}"
