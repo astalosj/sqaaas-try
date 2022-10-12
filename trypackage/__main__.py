@@ -17,7 +17,7 @@ from .core import Package, TryError, try_packages
 from .config import parse_config
 
 
-def normalize_python_version(ctx, param, 
+def normalize_python_version(ctx, param,
                              value):  # pylint: disable=unused-argument
     """Normalize given python version."""
     if value is None:
@@ -68,7 +68,7 @@ def resolve_packages(ctx, param, value):
 @click.option("--ipython", "use_ipython", flag_value=True,
               help="Use ipython instead of python.")
 @click.option("--shell",
-              help="""Specify the python shell to use. 
+              help="""Specify the python shell to use.
               (This will override --ipython)""")
 @click.option("-k", "--keep", flag_value=True,
               help="Keep try environment files.")
@@ -79,7 +79,7 @@ def resolve_packages(ctx, param, value):
 @click.option("-i", "--index",
               help="Specify the Packaging Index.")
 @click.version_option()
-def cli(packages, virtualenv, python, use_ipython, shell, keep, 
+def cli(packages, virtualenv, python, use_ipython, shell, keep,
         use_editor, tmpdir, index):  # pylint: disable=too-many-arguments
     """Easily try out python packages."""
     if not packages:
@@ -95,7 +95,7 @@ def cli(packages, virtualenv, python, use_ipython, shell, keep,
         click.style(",".join(p.url for p in packages), bold=True)))
 
     try:
-        envdir = try_packages(packages, virtualenv, python, shell, 
+        envdir = try_packages(packages, virtualenv, python, shell,
                               use_editor, keep, tmpdir, index)
     except TryError as error:
         click.secho("[*] {0}".format(error), fg="red")
