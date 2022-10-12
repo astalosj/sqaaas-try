@@ -182,6 +182,6 @@ def exec_in_virtualenv(command):
         proc = Popen(". {0}/bin/activate && {1}".format(
             context.virtualenv_path, command), shell=True)
     if proc.wait() != 0:
-        raise TryError("Command '{0}' exited with error code: {1}. 
-                       See {2}".format(
+        raise TryError(
+            "Command '{0}' exited with error code: {1}. See {2}".format(
             command, proc.returncode, context.logfile))
