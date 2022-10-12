@@ -31,13 +31,14 @@ class TryError(Exception):
 
 
 def try_packages(packages, virtualenv=None, python_version=None,
-                 shell=None, use_editor=False, keep=False, tmpdir_base=None, index=None):
+                 shell=None, use_editor=False, keep=False, 
+                 tmpdir_base=None, index=None):
     """Try a python package with a specific python version.
 
     The python version must already be installed on the system.
 
     :param str package: the name of the package to try.
-    :param str virtualenv: the path to the virtualenv to use. 
+    :param str virtualenv: the path to the virtualenv to use.
      If None a new one is created.
     :param str python_version: the python version for the interpreter.
     :param str shell: use different shell then default python shell.
@@ -57,12 +58,12 @@ def try_packages(packages, virtualenv=None, python_version=None,
 
             if not use_editor:
                 shell = shell if shell else "python"
-                with use_import([p.import_name for p in packages]
-                               ) as startup_script:
+                with use_import(
+                    [p.import_name for p in packages]) as startup_script:
                     run_shell(shell, startup_script)
             else:
-                with use_template([p.import_name for p in packages]
-                                 ) as template:
+                with use_template(
+                    [p.import_name for p in packages]) as template:
                     run_editor(template)
         return tmpdir
 
@@ -96,7 +97,8 @@ def use_virtualenv(virtualenv, python_version):
             # check if given directory is a virtualenv
             if not os.path.join(virtualenv, "bin/activate"):
                 raise TryError(
-                    "Given directory {0} is not a virtualenv.".format(virtualenv))
+                    "Given directory {0} is not a virtualenv."
+                    .format(virtualenv))
 
             context.virtualenv_path = virtualenv
             yield True
@@ -136,7 +138,7 @@ def use_template(packages):
     :returns: the path to the created template file
     :rtype: str
     """
-    with open(os.path.join(os.path.dirname(__file__), 
+    with open(os.path.join(os.path.dirname(__file__),
                            "script.template")) as template_file:
         template = template_file.read()
 
@@ -183,5 +185,5 @@ def exec_in_virtualenv(command):
             context.virtualenv_path, command), shell=True)
     if proc.wait() != 0:
         raise TryError(
-            "Command '{0}' exited with error code: {1}. See {2}".format(
-            command, proc.returncode, context.logfile))
+            "Command '{0}' exited with error code: {1}. See {2}"
+            .format(command, proc.returncode, context.logfile))
