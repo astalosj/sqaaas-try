@@ -30,13 +30,15 @@ class TryError(Exception):
         context.failed = True
 
 
-def try_packages(packages, virtualenv=None, python_version=None, shell=None, use_editor=False, keep=False, tmpdir_base=None, index=None):
+def try_packages(packages, virtualenv=None, python_version=None,
+                 shell=None, use_editor=False, keep=False, tmpdir_base=None, index=None):
     """Try a python package with a specific python version.
 
     The python version must already be installed on the system.
 
     :param str package: the name of the package to try.
-    :param str virtualenv: the path to the virtualenv to use. If None a new one is created.
+    :param str virtualenv: the path to the virtualenv to use. 
+     If None a new one is created.
     :param str python_version: the python version for the interpreter.
     :param str shell: use different shell then default python shell.
     :param bool use_editor: use editor instead of interpreter.
@@ -55,10 +57,12 @@ def try_packages(packages, virtualenv=None, python_version=None, shell=None, use
 
             if not use_editor:
                 shell = shell if shell else "python"
-                with use_import([p.import_name for p in packages]) as startup_script:
+                with use_import([p.import_name for p in packages]
+                               ) as startup_script:
                     run_shell(shell, startup_script)
             else:
-                with use_template([p.import_name for p in packages]) as template:
+                with use_template([p.import_name for p in packages]
+                                 ) as template:
                     run_editor(template)
         return tmpdir
 
@@ -91,12 +95,14 @@ def use_virtualenv(virtualenv, python_version):
         if virtualenv:
             # check if given directory is a virtualenv
             if not os.path.join(virtualenv, "bin/activate"):
-                raise TryError("Given directory {0} is not a virtualenv.".format(virtualenv))
+                raise TryError("Given directory {0} is not a
+                               virtualenv.".format(virtualenv))
 
             context.virtualenv_path = virtualenv
             yield True
         else:
-            proc = Popen("virtualenv env -p {0} >> {1}".format(python_version, context.logfile),
+            proc = Popen("virtualenv env -p {0} >> {1}".format(
+                python_version, context.logfile),
                          shell=True, cwd=context.tempdir_path)
             context.virtualenv_path = os.path.join(context.tempdir_path, "env")
             yield proc.wait() == 0
@@ -130,12 +136,14 @@ def use_template(packages):
     :returns: the path to the created template file
     :rtype: str
     """
-    with open(os.path.join(os.path.dirname(__file__), "script.template")) as template_file:
+    with open(os.path.join(os.path.dirname(__file__), 
+                           "script.template")) as template_file:
         template = template_file.read()
 
     template_path = os.path.join(context.tempdir_path, "main.py")
     with open(template_path, "w+") as template_file:
-        template_file.write(template.format("\n".join("import {0}".format(p) for p in packages)))
+        template_file.write(template.format("\n".join(
+            "import {0}".format(p) for p in packages)))
     yield template_path
 
 
@@ -148,9 +156,11 @@ def pip_install(package, index=None):
 def run_shell(shell, startup_script):
     """Run specific python shell."""
     if system() == "Windows":
-        exec_in_virtualenv("PYTHONSTARTUP={0} && {1}".format(startup_script, shell))
+        exec_in_virtualenv("PYTHONSTARTUP={0} && {1}".format(
+            startup_script, shell))
     else:
-        exec_in_virtualenv("PYTHONSTARTUP={0} {1}".format(startup_script, shell))
+        exec_in_virtualenv("PYTHONSTARTUP={0} {1}".format(
+            startup_script, shell))
 
 
 def run_editor(template_path):
@@ -163,11 +173,15 @@ def exec_in_virtualenv(command):
     """Execute command in virtualenv."""
     if system() == "Windows":
         if command.startswith("PYTHONSTARTUP"):
-            proc = Popen("{0}/Scripts/activate && set {1}".format(context.virtualenv_path, command), shell=True)
+            proc = Popen("{0}/Scripts/activate && set {1}".format(
+                context.virtualenv_path, command), shell=True)
         else:
-            proc = Popen("{0}/Scripts/activate && {1}".format(context.virtualenv_path, command), shell=True)
+            proc = Popen("{0}/Scripts/activate && {1}".format(
+                context.virtualenv_path, command), shell=True)
     else:
-        proc = Popen(". {0}/bin/activate && {1}".format(context.virtualenv_path, command), shell=True)
+        proc = Popen(". {0}/bin/activate && {1}".format(
+            context.virtualenv_path, command), shell=True)
     if proc.wait() != 0:
-        raise TryError("Command '{0}' exited with error code: {1}. See {2}".format(
+        raise TryError("Command '{0}' exited with error code: {1}. 
+                       See {2}".format(
             command, proc.returncode, context.logfile))
