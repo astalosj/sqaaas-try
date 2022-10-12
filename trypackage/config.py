@@ -56,7 +56,7 @@ def parse_config(configfile):
         "python": get_option(parser.get, "env", "python"),
         "shell": get_option(parser.get, "env", "shell"),
         "keep": get_option(parser.getboolean, "env", "keep", default=False),
-        "use_editor": get_option(parser.getboolean, "env", 
+        "use_editor": get_option(parser.getboolean, "env",
                                  "always_use_editor", default=False),
         "tmpdir": os.path.expanduser(os.path.expandvars(
             get_option(parser.get, "env", "tmpdir", default="")))
