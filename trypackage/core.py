@@ -95,8 +95,8 @@ def use_virtualenv(virtualenv, python_version):
         if virtualenv:
             # check if given directory is a virtualenv
             if not os.path.join(virtualenv, "bin/activate"):
-                raise TryError("Given directory {0} is not a
-                               virtualenv.".format(virtualenv))
+                raise TryError(
+                    "Given directory {0} is not a virtualenv.".format(virtualenv))
 
             context.virtualenv_path = virtualenv
             yield True
